@@ -26,6 +26,9 @@ type Mutation {
 
     #Mutation to register User
     registerUser(input:RegisterUserInput! @spread):User! @field(resolver:"AuthMutator@registerUser")
+
+    #Mutation to register a vehicle
+    registerVehicle(input:RegisterVehicleInput! @spread): Vehicle! @guard @field(resolver:"VehicleMutator@store")
 }
 
 # user fields type
@@ -71,5 +74,13 @@ input RegisterUserInput{
     password:String! @rules(apply:["required","min:8","confirmed"])
     password_confirmation:String!
     name:String! @rules(apply:["required"])
+}
+
+#register new Vehicle inputs
+input RegisterVehicleInput{
+    registration_no:String! @rules(apply:["required","max:30"])
+    year_of_manufacture:Int! @rules(apply:["required","max:4","min:4"])
+    type:String! @rules(apply:["required","max:30"])
+    tonnage:Float! @rules(apply:["required"])
 }
 
