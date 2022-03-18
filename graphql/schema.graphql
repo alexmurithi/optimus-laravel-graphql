@@ -1,6 +1,5 @@
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
-scalar DateTime
-    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
 scalar Email @scalar(class: "MLL\\GraphQLScalars\\Email")
 
@@ -9,6 +8,9 @@ type Query {
 
     #Query to get the current logged user
     me: User @auth
+
+    #Query to get a specific user
+    user(id:ID! @eq): User! @guard @find
 }
 
 type Mutation {
@@ -34,6 +36,18 @@ type User {
     email: String!
     created_at: DateTime!
     updated_at: DateTime
+    vehicles:[Vehicle!] @hasMany
+}
+
+type Vehicle{
+    id:ID!
+    registration_no:String!
+    year_of_manufacture:Int!
+    type:String!
+    tonnage:Float!
+    created_at:DateTime!
+    updated_at:DateTime
+    user:User! @belongsTo
 }
 
 # authenticated user fields type
