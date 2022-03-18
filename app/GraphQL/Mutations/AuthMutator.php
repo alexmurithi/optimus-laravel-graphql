@@ -5,6 +5,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use GraphQL\Type\Definition\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use Throwable;
 
 class AuthMutator
 {
@@ -18,10 +19,34 @@ class AuthMutator
         $credentials =Arr::only($args,['email','password']);
 
         if(!$token =Auth::attempt($credentials)){
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return [
+                "success"=>false,
+            ];
+
         }
 
         return $this->respondWithToken($token);
+
+    }
+
+    public function logout($_,$args, GraphQLContext $context, ResolveInfo $resolveInfo){
+        try {
+            auth()->logout();
+            return [
+                "message"=>"User Logout Successfully!"
+            ];
+        } catch (Throwable $exception){
+            report($exception);
+        }
+
+    }
+
+    public function me ($_,$args, GraphQLContext $context, ResolveInfo $resolveInfo){
+        try{
+            return auth()->user();
+        }catch(Throwable $exception){
+            report($exception);
+        }
 
     }
 
@@ -34,6 +59,7 @@ class AuthMutator
 
     protected function respondWithToken(string $token){
         return [
+            "success"=>true,
             "access_token"=>$token,
             "token_type"=>"bearer",
             "expires_in"=>auth()->factory()->getTTL()*60,
