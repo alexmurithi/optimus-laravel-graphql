@@ -2,6 +2,8 @@
 scalar DateTime
     @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
+scalar Email @scalar(class: "MLL\\GraphQLScalars\\Email")
+
 type Query {
     users: [User!]! @paginate(type: CONNECTION)
 
@@ -12,24 +14,29 @@ type Query {
 type Mutation {
     #Mutation to login the user with password and email
     login(
-        email:String! @rules(apply:["string","email"]),
-        password:String! @rules(apply:["string","min:8"])
+        email:Email! @rules(apply:["required","email"]),
+        password:String! @rules(apply:["required","min:8"])
     )
     :AuthPayLoad! @field(resolver:"AuthMutator@login")
 
     #Mutation to logout user
     logout: LogoutResponse @guard @field(resolver:"AuthMutator@logout")
+
+    #Mutation to register User
+    registerUser(input:RegisterUserInput! @spread):User! @field(resolver:"AuthMutator@registerUser")
 }
 
+# user fields type
 type User {
     id: ID!
-    name: String!
+    name: String
     username:String!
     email: String!
     created_at: DateTime!
     updated_at: DateTime!
 }
 
+# authenticated user fields type
 type AuthPayLoad{
     success:Boolean!
     access_token:String
@@ -38,7 +45,16 @@ type AuthPayLoad{
     user:User
 }
 
+#logout response field
 type LogoutResponse{
     message:String!
+}
+
+# register new user inputs
+input RegisterUserInput{
+    username:String! @rules(apply:["required","min:8"])
+    email:Email! @rules(apply:["required"])
+    password:String! @rules(apply:["required","min:8"])
+    name:String! @rules(apply:["required"])
 }
 
