@@ -29,6 +29,15 @@ type Mutation {
 
     #Mutation to register a vehicle
     registerVehicle(input:RegisterVehicleInput! @spread): Vehicle! @guard @field(resolver:"VehicleMutator@store")
+
+    #Mutation to update vehicle details
+    updateVehicle(
+        id:ID!,
+        year_of_manufacture:Int,
+        registration_no:String
+        type:String!
+        tonnage:Float!
+    ): Vehicle! @guard @update
 }
 
 # user fields type

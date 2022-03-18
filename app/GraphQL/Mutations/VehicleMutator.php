@@ -18,6 +18,7 @@ class VehicleMutator
         return $this;
     }
 
+    #Resolver to register a new vehicle
     public function store($_,$args, GraphQLContext $context, ResolveInfo $resolveInfo){
         return Vehicle::create([
             "user_id"=>auth()->user()->id,
