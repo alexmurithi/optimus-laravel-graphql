@@ -42,10 +42,13 @@ class AuthMutator
     }
 
     public function me ($_,$args, GraphQLContext $context, ResolveInfo $resolveInfo){
-       return auth()->user();
+        try{
+            return auth()->user();
+        }catch(Throwable $exception){
+            report($exception);
+        }
 
     }
-
 
     public function refresh()
     {
