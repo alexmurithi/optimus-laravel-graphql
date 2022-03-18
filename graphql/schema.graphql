@@ -33,7 +33,7 @@ type User {
     username:String!
     email: String!
     created_at: DateTime!
-    updated_at: DateTime!
+    updated_at: DateTime
 }
 
 # authenticated user fields type
@@ -54,7 +54,8 @@ type LogoutResponse{
 input RegisterUserInput{
     username:String! @rules(apply:["required","min:8"])
     email:Email! @rules(apply:["required"])
-    password:String! @rules(apply:["required","min:8"])
+    password:String! @rules(apply:["required","min:8","confirmed"])
+    password_confirmation:String!
     name:String! @rules(apply:["required"])
 }
 
