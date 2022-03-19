@@ -7,7 +7,7 @@ Vehicle Registration API built in Laravel, Lighthouse and GraphQL
 - Register new User
 - Logout
 - Register a Vehicle
-- Updated Vehicle details
+- Update Vehicle details
 - List all Vehicles belonging to a specific user
 
 ## Setup
