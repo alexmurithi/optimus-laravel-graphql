@@ -35,7 +35,7 @@ class LogoutTest extends TestCase
                  message,
                }
             }'
-        )->assertJson([
+        )->assertExactJson([
             "data"=>[
                 "logout"=>[
                     "message"=>"User Logout Successfully!"
