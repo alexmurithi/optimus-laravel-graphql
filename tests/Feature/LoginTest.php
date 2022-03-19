@@ -15,16 +15,26 @@ class LoginTest extends TestCase {
         $response =$this->graphQL(/** @lang GraphQL */
             'mutation login($email:Email!,$password:String!){
                login(email:$email,password: $password){
-                 success,
+                 access_token,
+                 token_type,
+                 expires_in,
+                 user{
+                 id
+                 }
                }
             }',[
                 "email"=>"johndoe@yahoo.com",
                 "password"=>"freeuser@123"
             ]
-            )->assertJsonFragment([
+            )->assertJsonStructure([
                 "data"=>[
                     "login"=>[
-                        "success"=>true
+                        "access_token",
+                        "token_type",
+                        "expires_in",
+                        "user"=>[
+                            "id"
+                        ]
                     ]
                 ]
         ]);

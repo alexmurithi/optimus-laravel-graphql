@@ -21,7 +21,7 @@ class UpdateVehicleTest extends TestCase {
         $user =$this->graphQL(/** @lang GraphQL */
             'mutation login($email:Email!,$password:String!){
                login(email:$email,password: $password){
-                 success,
+                 access_token,
                }
             }',[
                 "email"=>"johndoe@yahoo.com",

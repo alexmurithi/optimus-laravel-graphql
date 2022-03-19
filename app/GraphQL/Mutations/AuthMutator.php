@@ -6,7 +6,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use GraphQL\Type\Definition\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthMutator
 {
@@ -19,11 +21,14 @@ class AuthMutator
     public function login($_, array $args,GraphQLContext $context, ResolveInfo $resolveInfo){
         $credentials =Arr::only($args,['email','password']);
 
-        if(!$token =Auth::attempt($credentials)){
-            return [
-                "success"=>false,
-            ];
-
+        try{
+            if(!$token =Auth::attempt($credentials)){
+                throw new UnauthorizedHttpException("error","Invalid Credentials");
+            }
+        }catch(JWTException $exception){
+            throw new UnauthorizedHttpException(
+                "error",$exception->getMessage(),
+            );
         }
 
         return $this->respondWithToken($token);
@@ -79,7 +84,6 @@ class AuthMutator
     #function to return logged user with access token
     protected function respondWithToken(string $token){
         return [
-            "success"=>true,
             "access_token"=>$token,
             "token_type"=>"bearer",
             "expires_in"=>auth()->factory()->getTTL()*60,
