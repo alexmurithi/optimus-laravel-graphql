@@ -93,5 +93,6 @@ input RegisterVehicleInput{
     year_of_manufacture:Int! @rules(apply:["required","max:4","min:4"])
     type:String! @rules(apply:["required","max:30"])
     tonnage:Float! @rules(apply:["required"])
+    user_id:Int
 }
 

@@ -21,7 +21,7 @@ class LoginTest extends TestCase {
                 "email"=>"feest.jeffery@example.com",
                 "password"=>"password"
             ]
-            )->assertJson([
+            )->assertJsonFragment([
                 "data"=>[
                     "login"=>[
                         "success"=>true
