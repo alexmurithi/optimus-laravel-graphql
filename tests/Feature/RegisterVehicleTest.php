@@ -32,7 +32,7 @@ class RegisterVehicleTest extends TestCase
                  success,
                }
             }',[
-                "email"=>"feest.jeffery@example.com",
+                "email"=>"johndoe@yahoo.com",
                 "password"=>"password"
             ]
         );
