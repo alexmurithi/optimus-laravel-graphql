@@ -28,7 +28,7 @@ browser. It should look like `http://127.0.0.1:8000` this will display laravel d
 
 To navigate to GraphQL Playground got to `http://127.0.0.1:8000/graphql-playground`
 
-##Testing
+## Testing
 This API contains test cases for all the features named above. Run `php artisan test` to run tests.
 
 ### Technologies
