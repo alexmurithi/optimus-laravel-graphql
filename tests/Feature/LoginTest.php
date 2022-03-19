@@ -19,7 +19,7 @@ class LoginTest extends TestCase {
                }
             }',[
                 "email"=>"johndoe@yahoo.com",
-                "password"=>"password"
+                "password"=>"freeuser@123"
             ]
             )->assertJsonFragment([
                 "data"=>[

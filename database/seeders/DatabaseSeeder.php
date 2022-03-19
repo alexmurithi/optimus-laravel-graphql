@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             "username"=>"Johndoe",
             "email"=>"johndoe@yahoo.com",
             'email_verified_at' => now(),
-            "password"=>bcrypt("password"),
+            "password"=>bcrypt("freeuser@123"),
             "name"=>"John Doe",
             'remember_token' => Str::random(10),
 

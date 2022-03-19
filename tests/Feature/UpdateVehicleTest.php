@@ -2,30 +2,22 @@
 
 namespace Tests\Feature;
 
+use App\Models\Vehicle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 
-
-class RegisterVehicleTest extends TestCase
-{
+class UpdateVehicleTest extends TestCase {
     use MakesGraphQLRequests;
     use WithFaker;
-
     /**
      * A basic feature test example.
      *
      * @return void
      */
 
-    public function testRegisterVehicle():void{
-
-        $registration_no =$this->faker->bothify('?###??##');
-        $year= 2014;
-        $type= $this->faker->company();
-        $tonnage= 250.75;
-
+    public function testUpdateVehicle():void{
         $user =$this->graphQL(/** @lang GraphQL */
             'mutation login($email:Email!,$password:String!){
                login(email:$email,password: $password){
@@ -37,50 +29,48 @@ class RegisterVehicleTest extends TestCase
             ]
         );
         $token =$user->json("data.login.access_token");
-        $user_id=$user->json("data.login.user.id");
 
+        $vehicle =Vehicle::first();
+        $type =$this->faker->company();
+        $tonnage=100.55;
 
         $response = $this->graphQL(/** @lang GraphQL */
-            'mutation registerVehicle(
-            $user_id:Int,
-            $year_of_manufacture:Int!,
-            $registration_no:String!
+            'mutation updateVehicle(
+            $id:ID!,
+            $year_of_manufacture:Int,
+            $registration_no:String
             $type:String!
             $tonnage:Float!
             ){
-               registerVehicle(
-               input: {
-                user_id: $user_id,
+               updateVehicle(
+                id: $id,
                 year_of_manufacture: $year_of_manufacture,
                 registration_no: $registration_no,
                 type: $type
                 tonnage:$tonnage
-               }
+
                ){
-                 registration_no,
-                 year_of_manufacture,
                  type
                  tonnage
-
+                 year_of_manufacture
+                 registration_no
                }
             }', [
-                "user_id" => $user_id,
-                "year_of_manufacture" => $year,
-                "registration_no"=>$registration_no,
+                "id" => $vehicle->id,
                 "type"=>$type,
-                "tonnage"=>$tonnage
+                "tonnage"=>$tonnage,
             ]
-        )->assertJsonFragment([
+        )->assertStatus(200)
+            ->assertJsonFragment([
             "data" => [
-                "registerVehicle" => [
-                    "registration_no"=>$registration_no,
-                    "year_of_manufacture" => $year,
+                "updateVehicle" => [
                     "type"=>$type,
                     "tonnage"=>$tonnage,
+                    "year_of_manufacture"=>$vehicle->year_of_manufacture,
+                    "registration_no"=>$vehicle->registration_no
                 ]
             ]
         ])->withHeaders(["Authorization"=>"Bearer ".$token]);
-
     }
 
 }
