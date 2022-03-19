@@ -11,7 +11,7 @@ type Query {
     #Query to get the current logged user
     me: User @auth
 
-    #Query to get a specific user
+    #Query to get a specific user with a list of vehicles
     user(id:ID! @eq): User! @guard @find
 }
 
