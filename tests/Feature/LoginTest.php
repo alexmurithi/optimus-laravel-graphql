@@ -18,7 +18,7 @@ class LoginTest extends TestCase {
                  success,
                }
             }',[
-                "email"=>"van.murphy@example.net",
+                "email"=>"feest.jeffery@example.com",
                 "password"=>"password"
             ]
             )->assertJson([

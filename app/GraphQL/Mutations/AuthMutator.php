@@ -47,7 +47,12 @@ class AuthMutator
     public function registerUser($_,$args, GraphQLContext $context, ResolveInfo $resolveInfo){
         $inputs = Arr::only($args,['username','email','password','name']);
         try{
-            return User::create($inputs);
+            return User::create([
+                'username'=>$args['username'],
+                'email'=>$args['email'],
+                'password'=>bcrypt($args['password']),
+                'name'=>$args['name']
+            ]);
         }catch(Throwable $exception){
             report($exception);
         }
