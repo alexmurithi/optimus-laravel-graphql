@@ -4,6 +4,8 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 scalar Email @scalar(class: "MLL\\GraphQLScalars\\Email")
 
 type Query {
+
+    #Query to list all users
     users: [User!]! @paginate(type: CONNECTION)
 
     #Query to get the current logged user
