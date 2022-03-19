@@ -24,9 +24,12 @@ run `php artisan db:seed` to populate your database with data.
 run `php artisan serve` to start server
 
 The API is now running. Copy the url link provided and paste it on your favourite
-browser. It should look it `http://127.0.0.1:8000` this will display laravel default landing page.
+browser. It should look like `http://127.0.0.1:8000` this will display laravel default landing page.
 
 To navigate to GraphQL Playground got to `http://127.0.0.1:8000/graphql-playground`
+
+##Testing
+This API contains test cases for all the features named above. Run `php artisan test` to run tests.
 
 ### Technologies
 - Laravel
