@@ -1,10 +1,10 @@
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
-scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar DateTime
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
 scalar Email @scalar(class: "MLL\\GraphQLScalars\\Email")
 
 type Query {
-
     #Query to list all users
     users: [User!]! @paginate(type: CONNECTION)
 
@@ -12,33 +12,43 @@ type Query {
     me: User @auth
 
     #Query to get a specific user with a list of vehicles
-    user(id:ID! @eq): User! @guard @find
+    user(id: ID! @eq): User! @guard @find
 }
 
 type Mutation {
     #Mutation to login the user with password and email
     login(
-        email:Email! @rules(apply:["required","email"]),
-        password:String! @rules(apply:["required","min:8"])
-    )
-    :AuthPayLoad! @field(resolver:"AuthMutator@login")
+        email: Email! @rules(apply: ["required", "email"])
+        password: String! @rules(apply: ["required", "min:8"])
+    ): AuthPayLoad! @field(resolver: "AuthMutator@login")
 
     #Mutation to logout user
-    logout: LogoutResponse @guard @field(resolver:"AuthMutator@logout")
+    logout: LogoutResponse @guard @field(resolver: "AuthMutator@logout")
 
     #Mutation to register User
-    registerUser(input:RegisterUserInput! @spread):User! @field(resolver:"AuthMutator@registerUser")
+    registerUser(input: RegisterUserInput! @spread): User!
+        @field(resolver: "AuthMutator@registerUser")
+
+    forgotPassword(
+        email: Email! @rules(apply: ["required"])
+    ): ForgotPasswordRes!
+        @field(resolver: "PasswordResetMutator@forgotPassword")
+
+    resetPassword(input: ResetPasswordInput! @spread): ResetPasswordResponse!
+        @field(resolver: "PasswordResetMutator@resetPassword")
 
     #Mutation to register a vehicle
-    registerVehicle(input:RegisterVehicleInput! @spread): Vehicle! @guard @field(resolver:"VehicleMutator@store")
+    registerVehicle(input: RegisterVehicleInput! @spread): Vehicle!
+        @guard
+        @field(resolver: "VehicleMutator@store")
 
     #Mutation to update vehicle details
     updateVehicle(
-        id:ID!,
-        year_of_manufacture:Int,
-        registration_no:String
-        type:String!
-        tonnage:Float!
+        id: ID!
+        year_of_manufacture: Int
+        registration_no: String
+        type: String!
+        tonnage: Float!
     ): Vehicle! @guard @update
 }
 
@@ -46,52 +56,66 @@ type Mutation {
 type User {
     id: ID!
     name: String
-    username:String!
+    username: String!
     email: String!
     created_at: DateTime!
     updated_at: DateTime
-    vehicles:[Vehicle!] @hasMany
+    vehicles: [Vehicle!] @hasMany
 }
 
-type Vehicle{
-    id:ID!
-    registration_no:String!
-    year_of_manufacture:Int!
-    type:String!
-    tonnage:Float!
-    created_at:DateTime!
-    updated_at:DateTime
-    user:User! @belongsTo
+type Vehicle {
+    id: ID!
+    registration_no: String!
+    year_of_manufacture: Int!
+    type: String!
+    tonnage: Float!
+    created_at: DateTime!
+    updated_at: DateTime
+    user: User! @belongsTo
 }
 
 # authenticated user fields type
-type AuthPayLoad{
-    access_token:String!
-    token_type:String!
-    expires_in:Int!
-    user:User!
+type AuthPayLoad {
+    access_token: String!
+    token_type: String!
+    expires_in: Int!
+    user: User!
 }
 
 #logout response field
-type LogoutResponse{
-    message:String!
+type LogoutResponse {
+    message: String!
+}
+
+type ForgotPasswordRes {
+    message: String!
+}
+
+type ResetPasswordResponse {
+    message: String!
 }
 
 # register new user inputs
-input RegisterUserInput{
-    username:String! @rules(apply:["required","min:8"])
-    email:Email! @rules(apply:["required"])
-    password:String! @rules(apply:["required","min:8","confirmed"])
-    password_confirmation:String!
-    name:String! @rules(apply:["required"])
+input RegisterUserInput {
+    username: String! @rules(apply: ["required", "min:8"])
+    email: Email! @rules(apply: ["required"])
+    password: String! @rules(apply: ["required", "min:8", "confirmed"])
+    password_confirmation: String!
+    name: String! @rules(apply: ["required"])
 }
 
 #register new Vehicle inputs
-input RegisterVehicleInput{
-    registration_no:String! @rules(apply:["required","max:30"])
-    year_of_manufacture:Int! @rules(apply:["required","max:4","min:4"])
-    type:String! @rules(apply:["required","max:30"])
-    tonnage:Float! @rules(apply:["required"])
-    user_id:Int
+input RegisterVehicleInput {
+    registration_no: String! @rules(apply: ["required", "max:30"])
+    year_of_manufacture: Int! @rules(apply: ["required", "max:4", "min:4"])
+    type: String! @rules(apply: ["required", "max:30"])
+    tonnage: Float! @rules(apply: ["required"])
+    user_id: Int
 }
 
+input ResetPasswordInput {
+    token: String! @rules(apply: ["required"])
+    email: Email! @rules(apply: ["required"])
+    password: String! @rules(apply: ["required", "min:8", "confirmed"])
+    password_confirmation: String!
+}

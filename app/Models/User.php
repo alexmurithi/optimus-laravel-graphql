@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Config;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -45,6 +47,7 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    #One to many relationship - A user has many Vehicles
     public function vehicles():HasMany
     {
         return $this->hasMany(Vehicle::class);
@@ -61,6 +64,12 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims() {
         return [];
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url =Config::get('app.url') . '/reset-password?token=' . $token;
+        $this->notify(new ResetPasswordNotification($url));
     }
 
 }
